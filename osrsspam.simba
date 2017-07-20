@@ -1,0 +1,56 @@
+// Spam MSG onto Old School RuneScape
+// written by: Black Jordan
+
+program OSRSSpam;
+
+const
+  ENTER = 13;
+  TIMES = 1337;
+  SIXSECONDS = 6000; // ms
+  MSG = 'glow2: Hello world!';
+  PROGNAME = 'Old School RuneScape';
+
+var
+  i : Integer;
+
+function FindAndSetTarget(TitlePrefix: String; SetAsTarget: Boolean): Boolean;
+var
+  T: TSysProcArr;
+  I: Integer;
+begin
+  T:= GetProcesses();
+  for I := 0 to high(T) do
+    if ExecRegExpr('^' + TitlePrefix, T[i].Title) then
+    begin
+      Result := True;
+      if SetAsTarget then
+      begin
+        SetTarget(T[i]);
+        ActivateClient;
+      end;
+    end;
+end;
+
+function Spam(message : String) : Boolean;
+begin
+    Result := FindAndSetTarget(PROGNAME, True);
+    if Result then
+    begin
+        SendKeys(message, 100, 100);
+        PressKey(ENTER);
+        Wait(SIXSECONDS);
+    end;
+
+end;
+
+procedure Mainloop;
+begin
+    for i := 0 to TIMES do
+    begin
+        Spam(MSG);
+    end;
+end;
+
+begin
+  Mainloop;
+end.
